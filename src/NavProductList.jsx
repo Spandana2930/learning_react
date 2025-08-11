@@ -1,11 +1,22 @@
 import React, { useState, useEffect } from "react";
 import "./NavProductList.css";
 import CartItem from "./CartItem";
-
+import { useDispatch, useSelector } from "react-redux";
+import { addItem, removeItem } from "./CartSlice";
 function NavProductList(props) {
   const [showCart, setShowCart] = useState(false);
   const [showPlants, setShowPlants] = useState(false);
  
+  const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.cart.items);
+  useEffect(() => {
+    const updatedAddedToCart = {};
+    cartItems.forEach((item) => {
+      updatedAddedToCart[item.name] = true;
+    });
+    setAddedToCart(updatedAddedToCart);
+  }, [cartItems]);
+
 
   const plantsArray = [
     {
@@ -249,6 +260,11 @@ function NavProductList(props) {
       ],
     },
   ];
+   const totalItems = () => {
+    console.log(cartItems)
+    return cartItems.reduce((total, item) => total + item.quantity, 0);
+  };
+
   const styleObj = {
     backgroundColor: "#4CAF50",
     color: "#fff!important",
@@ -297,11 +313,17 @@ function NavProductList(props) {
 
   const [addedToCart, setAddedToCart] = useState({});
 
+const handleRemoveFromCart = (plant) => {
+     dispatch(removeItem(plant));
+  };
   const handleAddToCart = (plant) => {
-    console.log(plant.name);
+    dispatch(addItem(plant));
+    setAddedToCart((prevState)=>({
+        ...prevState,
+        [plant.name]:true
+    }))
   };
 
-  const handleRemoveFromCart = (plant) => {};
 
   return (
     <div>
@@ -344,7 +366,8 @@ function NavProductList(props) {
                     textAlign: "center",
                     paddingLeft: "24px",
                   }}
-                >               
+                >  
+                  {totalItems()}             
                 </label>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -405,7 +428,7 @@ function NavProductList(props) {
                           : handleAddToCart(plant)
                       }
                     >
-                      Add to Cart
+                      { addedToCart[plant.name] ? "Added to Cart" : " Add to Cart"}
                     </button>
                   </div>
                 ))}
