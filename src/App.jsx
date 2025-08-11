@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./App.css";
 // import ConferenceEvent from "./ConferenceEvent";
 import AboutUs from "./AboutUs";
+import NavProductList from "./NavProductList";
 
 function App() {
   const [showVenue, setShowVenue] = useState(false);
@@ -32,7 +33,7 @@ function App() {
       </header>
 
       <div className={`event-list-container ${showVenue ? 'visible' : ''}`}>
-        {/* <ConferenceEvent /> */}
+        <NavProductList/>
       </div>
     </>
   );
